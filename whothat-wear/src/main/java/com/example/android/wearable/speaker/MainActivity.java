@@ -183,7 +183,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private void start() {
         // init recorder and api connections
         mSoundRecorder = new SoundRecorder(this, VOICE_FILE_NAME);
-        mSpeakerRecognition = new SpeakerRecognition(this, VOICE_FILE_NAME);
+        mSpeakerRecognition = new SpeakerRecognition(this, VOICE_FILE_NAME, VOICE_FILE_NAME_WAV);
 
         //int[] thumbResources = new int[] {R.id.mic, R.id.play, R.id.music};
 
