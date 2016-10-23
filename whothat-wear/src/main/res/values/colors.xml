@@ -12,10 +12,11 @@
   limitations under the License.
   -->
 <resources>
-    <color name="small_icons_color">#FFF1E0</color>
-    <color name="large_icons_color">#FFF1E0</color>
+    <color name="small_icons_color">#FF99E0</color>
+    <color name="large_icons_color">#FF99E0</color>
     <color name="background_color">#F1F1F1</color>
     <color name="circle_color">#AACCFF</color>
+    <color name="name_color">#000000</color>
     <color name="progressbar_tint">#D180FF</color>
     <color name="progressbar_background_tint">#5100E6</color>
 </resources>

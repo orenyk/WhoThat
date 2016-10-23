@@ -56,6 +56,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private SoundRecorder mSoundRecorder;
 
     private UIAnimation mUIAnimation;
+    private SpeakerRecognition mSpeakerRecognition;
     private ProgressBar mProgressBar;
     private CountDownTimer mCountDownTimer;
 
@@ -101,10 +102,16 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
                         mProgressBar.setProgress(0);
                         mProgressBar.setVisibility(View.INVISIBLE);
                         mSoundRecorder.stopRecording();
-                        mUIAnimation.transitionToHome();
+                        //mUIAnimation.transitionToHome();
                         mUiState = UIAnimation.UIState.HOME;
                         mState = AppState.READY;
                         mCountDownTimer = null;
+                        try {
+                            mSpeakerRecognition.idVoice();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 };
                 mCountDownTimer.start();
@@ -167,7 +174,10 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
      * Starts the main flow of the application.
      */
     private void start() {
+        // init recorder and api connections
         mSoundRecorder = new SoundRecorder(this, VOICE_FILE_NAME);
+        mSpeakerRecognition = new SpeakerRecognition(VOICE_FILE_NAME);
+
         //int[] thumbResources = new int[] {R.id.mic, R.id.play, R.id.music};
 
         int[] thumbResources = new int[] {R.id.mic};
@@ -180,8 +190,9 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
         View containerView = findViewById(R.id.container);
         ImageView expandedView = (ImageView) findViewById(R.id.expanded);
         int animationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        mUIAnimation = new UIAnimation(containerView, thumbs, expandedView, animationDuration,
-                this);
+        mUIAnimation = new UIAnimation(containerView, thumbs, expandedView, animationDuration, this);
+
+
     }
 
     @Override

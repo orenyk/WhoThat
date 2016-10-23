@@ -20,6 +20,9 @@
     <!-- the following permission is required to record audio using a microphone -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- this is for final SDK, currently use meta tags -->
+    <!-- android:networkSecurityConfig="@xml/network_security_config" -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -36,6 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data android:name="android.security.net.config"
+            android:resource="@xml/network_security_config" />
     </application>
 
 </manifest>

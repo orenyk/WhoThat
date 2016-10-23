@@ -12,6 +12,7 @@
   limitations under the License.
   -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -67,18 +68,36 @@
             android:layout_toRightOf="@+id/center"
             android:src="@drawable/ic_audiotrack_32dp" /-->
 
+        <TextView
+            android:text="Default Name"
+            android:layout_width="wrap_content"
+            android:id="@+id/name"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:singleLine="false"
+            android:layout_alignBottom="@+id/circle"
+            android:textColor="@color/name_color"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="false"
+            android:scrollHorizontally="false"
+            android:layout_centerHorizontal="true" />
+
         <ProgressBar
             android:id="@+id/progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/circle"
-            android:layout_alignEnd="@+id/circle"
-            android:layout_below="@+id/circle"
             android:progressTint="@color/progressbar_tint"
             android:progressBackgroundTint="@color/progressbar_background_tint"
-            android:layout_marginTop="5dp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_below="@+id/circle"
+            android:layout_alignEnd="@+id/circle"
+            android:maxHeight="20dip"
+            android:minHeight="20dip" />
+
     </RelativeLayout>
 
     <ImageView

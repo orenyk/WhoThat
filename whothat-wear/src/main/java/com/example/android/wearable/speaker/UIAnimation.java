@@ -40,7 +40,7 @@ public class UIAnimation {
     private final int mAnimationDurationTime;
 
     private UIStateListener mListener;
-    private UIState mState = UIState.HOME;
+    private UIState mState = UIState.MIC_UP;
 
     public UIAnimation(View containerView, ImageView[] thumbs, ImageView expandedView,
             int animationDuration, UIStateListener listener) {
@@ -56,6 +56,7 @@ public class UIAnimation {
                 zoomImageFromThumb(0);
             }
         });
+
     }
 
     private void zoomImageFromThumb(final int index) {
@@ -67,14 +68,17 @@ public class UIAnimation {
 
         expandedImageView.setImageResource(imageResId);
 
+
         final Rect startBounds = new Rect();
         final Rect finalBounds = new Rect();
         final Point globalOffset = new Point();
+        float startScale;
+
         thumbView.getGlobalVisibleRect(startBounds);
         mContainerView.getGlobalVisibleRect(finalBounds, globalOffset);
         startBounds.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
-        float startScale;
+
         if ((float) finalBounds.width() / finalBounds.height()
                 > (float) startBounds.width() / startBounds.height()) {
             startScale = (float) startBounds.height() / finalBounds.height();
@@ -93,6 +97,7 @@ public class UIAnimation {
         for(int k=0; k < 1; k++) {
             mThumbs[k].setAlpha(0f);
         }
+
         expandedImageView.setVisibility(View.VISIBLE);
 
         expandedImageView.setPivotX(0f);
@@ -171,6 +176,7 @@ public class UIAnimation {
                 mCurrentAnimator = zoomOutAnimator;
             }
         });
+
     }
 
     public enum UIState {
