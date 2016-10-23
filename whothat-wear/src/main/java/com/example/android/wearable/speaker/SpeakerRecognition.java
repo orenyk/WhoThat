@@ -86,7 +86,7 @@ public class SpeakerRecognition {
 //        profiles.put(UUID.fromString("5389d462-22c2-4778-8831-476b3e1d36f6"), "Oren Kanner");
     }
 
-    public void idVoice() throws Exception {
+    public String idVoice() throws Exception {
         // convert raw file to wav
         //File wav = new File(mOutputFileNameWav);
         rawToWave(mContext.getFileStreamPath(mOutputFileName), mContext.getFileStreamPath(mOutputFileNameWav));
@@ -168,7 +168,7 @@ public class SpeakerRecognition {
             JSONObject reader = new JSONObject(response);
             Log.d(TAG, "status: " + reader.getString("status"));
             if(reader.getString("status").equals("succeeded")) {
-                Log.d(TAG, "We win!");
+                //Log.d(TAG, "We win!");
                 JSONObject results = reader.getJSONObject("processingResult");
 
                 profileID = results.getString("identifiedProfileId");
@@ -185,6 +185,7 @@ public class SpeakerRecognition {
 
         Log.d(TAG, "person: " + personName);
         Log.d(TAG, "confidence: " + confidence);
+        return personName;
     }
 
     public void getOpsStatus(String opsID)

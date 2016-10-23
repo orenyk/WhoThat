@@ -58,6 +58,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private AppState mState = AppState.READY;
     private UIAnimation.UIState mUiState = UIAnimation.UIState.HOME;
     private SoundRecorder mSoundRecorder;
+    private String vName = "default";
 
     private UIAnimation mUIAnimation;
     private SpeakerRecognition mSpeakerRecognition;
@@ -122,8 +123,9 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
-                                    mSpeakerRecognition.idVoice();
+                                    vName = mSpeakerRecognition.idVoice();
                                     handler.sendEmptyMessage(MSG_DOWNLOADED);
+                                    //Log.d(TAG, vName);
                                     //handler.sendMessage("Lec Maj");
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -284,7 +286,8 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_DOWNLOADED:
-                    mName.setText("Lec Maj");
+                    Log.d(TAG, vName);
+                    mName.setText(vName);
                     mName.setVisibility(View.VISIBLE);
                     break;
             }
