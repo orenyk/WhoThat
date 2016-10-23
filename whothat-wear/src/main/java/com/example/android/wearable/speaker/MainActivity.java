@@ -25,6 +25,8 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.wearable.activity.WearableActivity;
@@ -32,6 +34,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.os.StrictMode;
 
@@ -59,6 +62,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private UIAnimation mUIAnimation;
     private SpeakerRecognition mSpeakerRecognition;
     private ProgressBar mProgressBar;
+    private TextView mName;
     private CountDownTimer mCountDownTimer;
 
     enum AppState {
@@ -72,6 +76,9 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         mProgressBar.setMax((int) (COUNT_DOWN_MS / MILLIS_IN_SECOND));
         setAmbientEnabled();
+
+        mName = (TextView) findViewById(R.id.name);
+        mName.setVisibility(View.INVISIBLE);
     }
 
     private void setProgressBar(long progressInMillis) {
@@ -94,6 +101,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
                     @Override
                     public void onTick(long millisUntilFinished) {
                         mProgressBar.setVisibility(View.VISIBLE);
+                        mName.setVisibility(View.INVISIBLE);
                         setProgressBar(millisUntilFinished);
                         Log.d(TAG, "Time Left: " + millisUntilFinished / MILLIS_IN_SECOND);
                     }
@@ -103,21 +111,27 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
                         mProgressBar.setProgress(0);
                         mProgressBar.setVisibility(View.INVISIBLE);
                         mSoundRecorder.stopRecording();
-                        //mUIAnimation.transitionToHome();
+                        mUIAnimation.transitionToHome();
                         mUiState = UIAnimation.UIState.HOME;
                         mState = AppState.READY;
                         mCountDownTimer = null;
+
+
 
                         // processing of the audio file
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
                                     mSpeakerRecognition.idVoice();
+                                    handler.sendEmptyMessage(MSG_DOWNLOADED);
+                                    //handler.sendMessage("Lec Maj");
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                         }).start();
+
+
 
                     }
                 };
@@ -258,4 +272,22 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
         }
         return false;
     }
+
+    /**
+     * Handler for new thread
+     */
+
+    public static final int MSG_DOWNLOADED = 0;
+    private Handler handler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_DOWNLOADED:
+                    mName.setText("Lec Maj");
+                    mName.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+    };
 }
