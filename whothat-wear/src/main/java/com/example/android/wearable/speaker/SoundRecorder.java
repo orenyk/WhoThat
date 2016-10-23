@@ -27,10 +27,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -42,7 +39,6 @@ public class SoundRecorder {
     private static final String TAG = "SoundRecorder";
     private static final int RECORDING_RATE = 16000; // can go up to 44K, if needed
     private static final int CHANNEL_IN = AudioFormat.CHANNEL_IN_MONO;
-    private static final int CHANNELS_OUT = AudioFormat.CHANNEL_OUT_MONO;
     private static final int FORMAT = AudioFormat.ENCODING_PCM_16BIT; // audio formats https://developer.android.com/reference/android/media/AudioFormat.html
     private static int BUFFER_SIZE = AudioRecord
             .getMinBufferSize(RECORDING_RATE, CHANNEL_IN, FORMAT);
@@ -56,7 +52,7 @@ public class SoundRecorder {
     private AsyncTask<Void, Void, Void> mRecordingAsyncTask;
 
     enum State {
-        IDLE, RECORDING, PLAYING
+        IDLE, RECORDING
     }
 
     public SoundRecorder(Context context, String outputFileName) {

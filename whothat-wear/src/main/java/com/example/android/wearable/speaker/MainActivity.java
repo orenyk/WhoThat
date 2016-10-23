@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -54,7 +53,6 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private static final long MILLIS_IN_SECOND = TimeUnit.SECONDS.toMillis(1);
     private static final String VOICE_FILE_NAME = "audiorecord.pcm";  // filename PCM Pulse-code Modulation
     private static final String VOICE_FILE_NAME_WAV = "audiorecord.wav";  // filename PCM Pulse-code Modulation
-    private MediaPlayer mMediaPlayer;
     private AppState mState = AppState.READY;
     private UIAnimation.UIState mUiState = UIAnimation.UIState.HOME;
     private SoundRecorder mSoundRecorder;
@@ -67,7 +65,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private CountDownTimer mCountDownTimer;
 
     enum AppState {
-        READY, PLAYING_VOICE, PLAYING_MUSIC, RECORDING, DISPLAY_NAME
+        READY, RECORDING, DISPLAY_NAME
     }
 
     @Override
@@ -244,10 +242,6 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
             mCountDownTimer.cancel();
         }
 
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-        }
         super.onStop();
     }
 
@@ -261,9 +255,9 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
             PackageManager packageManager = getPackageManager();
             // The results from AudioManager.getDevices can't be trusted unless the device
             // advertises FEATURE_AUDIO_OUTPUT.
-            if (!packageManager.hasSystemFeature(PackageManager.FEATURE_AUDIO_OUTPUT)) {
-                return false;
-            }
+//            if (!packageManager.hasSystemFeature(PackageManager.FEATURE_AUDIO_OUTPUT)) {
+//                return false;
+//            }
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
             for (AudioDeviceInfo device : devices) {
