@@ -138,8 +138,8 @@ public class SpeakerRecognition {
         // Send post request
         con.setDoOutput(true);
         OutputStream conStream = new BufferedOutputStream(con.getOutputStream());
-        InputStream fileStream = mContext.getResources().openRawResource(R.raw.lec_test);
-//        FileInputStream fileStream = mContext.openFileInput(mOutputFileNameWav);
+//        InputStream fileStream = mContext.getResources().openRawResource(R.raw.lec_test);
+        FileInputStream fileStream = mContext.openFileInput(mOutputFileNameWav);
 
         while(fileStream.available() > 0) {
             conStream.write((char) fileStream.read());
