@@ -60,7 +60,7 @@ public class SpeakerRecognition {
         rawToWave(mContext.getFileStreamPath(mOutputFileName), mContext.getFileStreamPath(mOutputFileNameWav));
 
         // Set up POST request connection
-        String url = "https://api.projectoxford.ai/spid/v1.0/identify?identificationProfileIds=598f3ffd-fc3b-461e-9d60-30ac69959ac3%2Cd39fa51d-1a48-4166-b788-91ead17683d2%2C4dd26ac5-1859-4c6b-88e4-b96bc848e45a%2C73e64453-3351-4b92-abc8-a4e62b336cf3&shortAudio=true";
+        String url = "https://api.projectoxford.ai/spid/v1.0/identify?identificationProfileIds=598f3ffd-fc3b-461e-9d60-30ac69959ac3%2Cd39fa51d-1a48-4166-b788-91ead17683d2%2C4dd26ac5-1859-4c6b-88e4-b96bc848e45a%2C73e64453-3351-4b92-abc8-a4e62b336cf3%2C2682fc4f-3a98-41bf-a83a-e83a7bc1467b&shortAudio=true";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
