@@ -3,10 +3,16 @@ package com.example.android.wearable.speaker;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,10 +26,12 @@ import javax.net.ssl.HttpsURLConnection;
 public class SpeakerRecognition {
 
     private static final String TAG = "SpeakerRecognition";
+    private Context mContext;
     private String mOutputFileName;
 
-    public SpeakerRecognition(String voiceFileName) {
+    public SpeakerRecognition(Context context, String voiceFileName) {
         mOutputFileName = voiceFileName;
+        mContext = context;
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -40,29 +48,48 @@ public class SpeakerRecognition {
         //add reuqest header
         con.setRequestMethod("POST");
         con.setRequestProperty("ocp-apim-subscription-key", "41c331eb960d4c5599f599b2dc00e4c1");
+        con.setRequestProperty("Content-Type", "multipart/form-data");
 
         // Send post request
         con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(mOutputFileName);
+
+        OutputStream conStream = new BufferedOutputStream(con.getOutputStream());
+        InputStream fileStream = mContext.getResources().openRawResource(R.raw.lec_test);
+//        FileInputStream fileStream = mContext.openFileInput(mOutputFileName);
+
+        while(fileStream.available() > 0) {
+            conStream.write((char) fileStream.read());
+        }
+        conStream.flush();
+        conStream.close();
+
+        // open up file for reading
+        // read a byte from the audio file
+        // send the byte to the connection stream
+        // continue until the end
+/*
+        wr.writeBytes(mContext.getFileStreamPath(mOutputFileName));
         wr.flush();
         wr.close();
+*/
 
         int responseCode = con.getResponseCode();
+        String response = con.getResponseMessage();
         Log.d(TAG, "Response Code: " + responseCode);
+        Log.d(TAG, "Response Msg: " + response);
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
+//        BufferedReader in = new BufferedReader(
+//                new InputStreamReader(con.getInputStream()));
+//        String inputLine;
+//        StringBuffer response = new StringBuffer();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
 
         //print result
-        Log.d(TAG, "Response: " + response.toString());
+//        Log.d(TAG, "Response: " + response.toString());
 
         /*
         OkHttpClient client = new OkHttpClient();
