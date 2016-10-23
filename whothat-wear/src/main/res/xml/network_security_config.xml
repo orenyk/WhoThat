@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
-    <domain-config>
-        <domain includeSubdomains="true">api.projectoxford.ai</domain>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">projectoxford.ai</domain>
     </domain-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" overridePins="true"/>
+            <certificates src="user" overridePins="true"/>
+        </trust-anchors>
+    </base-config>
 </network-security-config>

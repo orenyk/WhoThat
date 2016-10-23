@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import android.os.StrictMode;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
@@ -24,6 +24,11 @@ public class SpeakerRecognition {
 
     public SpeakerRecognition(String voiceFileName) {
         mOutputFileName = voiceFileName;
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         //Log.d(TAG, " "+mOutputFileName);
     }
 
