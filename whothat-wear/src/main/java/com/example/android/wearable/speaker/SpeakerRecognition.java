@@ -21,11 +21,24 @@ import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import android.os.StrictMode;
 
+import com.google.android.gms.common.api.Api;
+import com.microsoft.cognitive.speakerrecognition.SpeakerIdentificationRestClient;
+import com.microsoft.cognitive.speakerrecognition.contract.identification.Identification;
+import com.microsoft.cognitive.speakerrecognition.contract.identification.IdentificationOperation;
+import com.microsoft.cognitive.speakerrecognition.contract.identification.OperationLocation;
+import com.microsoft.cognitive.speakerrecognition.contract.identification.Profile;
+import com.microsoft.cognitive.speakerrecognition.contract.identification.Status;
+
 import org.json.JSONObject;
+import android.text.TextUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -40,6 +53,9 @@ public class SpeakerRecognition {
     private Context mContext;
     private String mOutputFileName;
     private String mOutputFileNameWav;
+    private HashMap<UUID, String> profiles = new HashMap<>();
+    private String ApiKey = "41c331eb960d4c5599f599b2dc00e4c1"; // Lec
+//    private String ApiKey = "8ebd40618b7440bdb973b1e96c06c02d"; // Oren
 
 
     public SpeakerRecognition(Context context, String voiceFileName, String voiceFileNameWav) {
@@ -51,7 +67,23 @@ public class SpeakerRecognition {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        //Log.d(TAG, " "+mOutputFileName);
+
+        // Store default profiles in HashMap
+//        profiles.put("00000000-0000-0000-0000-000000000000", "Unknown");
+
+        // Lec's API Key
+        profiles.put(UUID.fromString("e54db49a-0182-42b5-8aa7-79087ece737d"), "Lec Maj");
+        profiles.put(UUID.fromString("2ae624c3-b4bb-4ef5-98f8-7cb89c38d0a1"), "Aishwarya Pillai");
+        profiles.put(UUID.fromString("fca93b1f-b981-439e-b9ee-619ef7a4aa2e"), "William Chen");
+//        profiles.put(UUID.fromString("80a06f85-1fd7-400f-9b65-58f5adc1a4cf"), "Raphael Leung");
+//        profiles.put(UUID.fromString("178c2604-0750-4bbc-a6fc-8f30591d17cb"), "Oren Kanner");
+
+        // Oren's API Key - Rate limit issues?
+//        profiles.put(UUID.fromString("9b430640-1a34-4ad7-be1b-ce9dd849d9c1"), "Lec Maj");
+//        profiles.put(UUID.fromString("66c09150-2a14-46aa-b146-6b27dc5f983f"), "Aishwarya Pillai");
+//        profiles.put(UUID.fromString("efef9cf8-936a-4003-a779-f3237b3e99c8"), "William Chen");
+//        profiles.put(UUID.fromString("7009a622-0a58-4eb7-ab97-83dc1ece6c4c"), "Raphael Leung");
+//        profiles.put(UUID.fromString("5389d462-22c2-4778-8831-476b3e1d36f6"), "Oren Kanner");
     }
 
     public void idVoice() throws Exception {
@@ -59,21 +91,55 @@ public class SpeakerRecognition {
         //File wav = new File(mOutputFileNameWav);
         rawToWave(mContext.getFileStreamPath(mOutputFileName), mContext.getFileStreamPath(mOutputFileNameWav));
 
+        // NOT CURRENTLY WORKING, NOT SURE WHY
+//        // Set up API Client
+//        SpeakerIdentificationRestClient client = new SpeakerIdentificationRestClient(ApiKey);
+//
+//        // Set up identification request
+//        List<Profile> profileList = client.getProfiles();
+//        Thread.sleep(250);
+//        List<UUID> uuidList = new ArrayList();
+//        for(Profile p : profileList) {
+//            uuidList.add(p.identificationProfileId);
+//        }
+//        FileInputStream fileStream = mContext.openFileInput(mOutputFileNameWav);
+//        OperationLocation checkUrl = client.identify(fileStream, uuidList, true);
+//        String personName;
+//
+//        // Check operation
+//        while(true) {
+//            Thread.sleep(1000);
+//            IdentificationOperation op = client.checkIdentificationStatus(checkUrl);
+//            if(op.status.equals(Status.SUCCEEDED)) {
+//                Identification id = op.processingResult;
+//
+//                if(id.identifiedProfileId.equals(UUID.fromString("00000000-0000-0000-0000-000000000000"))) {
+//                    personName = "Unknown";
+//                } else {
+//                    personName = profiles.get(id.identifiedProfileId);
+//                }
+//                break;
+//            }
+//        }
+//
+//        Log.d(TAG, "identified as: " + personName);
+
         // Set up POST request connection
-        String url = "https://api.projectoxford.ai/spid/v1.0/identify?identificationProfileIds=598f3ffd-fc3b-461e-9d60-30ac69959ac3%2Cd39fa51d-1a48-4166-b788-91ead17683d2%2C4dd26ac5-1859-4c6b-88e4-b96bc848e45a%2C73e64453-3351-4b92-abc8-a4e62b336cf3%2C2682fc4f-3a98-41bf-a83a-e83a7bc1467b&shortAudio=true";
+        String listOfIds = TextUtils.join(",",profiles.keySet());
+        String url = "https://api.projectoxford.ai/spid/v1.0/identify?identificationProfileIds="+listOfIds+"&shortAudio=true";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
         // Add request headers
         con.setRequestMethod("POST");
-        con.setRequestProperty("ocp-apim-subscription-key", "41c331eb960d4c5599f599b2dc00e4c1");
-        con.setRequestProperty("Content-Type", "multipart/form-data");
+        con.setRequestProperty("ocp-apim-subscription-key", ApiKey);
+        con.setRequestProperty("Content-Type", "application/octet-stream");
 
         // Send post request
         con.setDoOutput(true);
         OutputStream conStream = new BufferedOutputStream(con.getOutputStream());
-//        InputStream fileStream = mContext.getResources().openRawResource(R.raw.lec_test);
-        FileInputStream fileStream = mContext.openFileInput(mOutputFileNameWav);
+        InputStream fileStream = mContext.getResources().openRawResource(R.raw.lec_test);
+//        FileInputStream fileStream = mContext.openFileInput(mOutputFileNameWav);
 
         while(fileStream.available() > 0) {
             conStream.write((char) fileStream.read());
@@ -97,7 +163,7 @@ public class SpeakerRecognition {
         String profileID, confidence, personName;
 
         while(true) {
-            Thread.sleep(500);
+            Thread.sleep(1000);
             String response = getAnalysisOutput(newUrl);
             JSONObject reader = new JSONObject(response);
             Log.d(TAG, "status: " + reader.getString("status"));
@@ -111,7 +177,7 @@ public class SpeakerRecognition {
                 if(profileID.equals("00000000-0000-0000-0000-000000000000")) {
                     personName = "Unknown";
                 } else {
-                    personName = profileID;
+                    personName = profiles.get(UUID.fromString(profileID));
                 }
                 break;
             }
@@ -141,7 +207,7 @@ public class SpeakerRecognition {
         try {
             URL newObj = new URL(newUrl);
             HttpURLConnection newCon = (HttpURLConnection) newObj.openConnection();
-            newCon.setRequestProperty("ocp-apim-subscription-key", "41c331eb960d4c5599f599b2dc00e4c1");
+            newCon.setRequestProperty("ocp-apim-subscription-key", ApiKey);
             InputStream in = new BufferedInputStream(newCon.getInputStream());
             BufferedReader r = new BufferedReader(new InputStreamReader(in));
             StringBuilder total = new StringBuilder();

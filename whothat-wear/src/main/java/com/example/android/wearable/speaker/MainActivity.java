@@ -47,7 +47,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
 
     private static final String TAG = "MainActivity";
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-    private static final long COUNT_DOWN_MS = TimeUnit.SECONDS.toMillis(10); // # seconds recording of voice
+    private static final long COUNT_DOWN_MS = TimeUnit.SECONDS.toMillis(5); // # seconds recording of voice
     private static final long MILLIS_IN_SECOND = TimeUnit.SECONDS.toMillis(1);
     private static final String VOICE_FILE_NAME = "audiorecord.pcm";  // filename PCM Pulse-code Modulation
     private static final String VOICE_FILE_NAME_WAV = "audiorecord.wav";  // filename PCM Pulse-code Modulation

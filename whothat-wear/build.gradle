@@ -40,4 +40,13 @@ dependencies {
     compile 'com.google.android.support:wearable:1.4.0'
     compile 'com.google.android.gms:play-services-wearable:9.8.00'
     compile 'com.android.support:appcompat-v7:25.0.0'
+    compile('com.microsoft.cognitive:speakerrecognition:1.0.0') {
+        exclude module: "httpclient"
+    }
+}
+
+android {
+    packagingOptions {
+        pickFirst  'META-INF/LICENSE'
+    }
 }
