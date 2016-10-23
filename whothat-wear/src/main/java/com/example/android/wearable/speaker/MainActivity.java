@@ -50,7 +50,8 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private static final long COUNT_DOWN_MS = TimeUnit.SECONDS.toMillis(5); // # seconds recording of voice
     private static final long MILLIS_IN_SECOND = TimeUnit.SECONDS.toMillis(1);
 //    private static final String VOICE_FILE_NAME = "audiorecord.pcm";  // filename PCM Pulse-code Modulation
-    private static final String VOICE_FILE_NAME = "audiorecord.wav";  // filename PCM Pulse-code Modulation
+    private static final String VOICE_FILE_NAME = "audiorecord.pcm";  // filename PCM Pulse-code Modulation
+    private static final String VOICE_FILE_NAME_WAV = "audiorecord.wav";
     private MediaPlayer mMediaPlayer;
     private AppState mState = AppState.READY;
     private UIAnimation.UIState mUiState = UIAnimation.UIState.HOME;
@@ -107,11 +108,17 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
                         mUiState = UIAnimation.UIState.HOME;
                         mState = AppState.READY;
                         mCountDownTimer = null;
-                        try {
-                            mSpeakerRecognition.idVoice();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+
+                        // processing of the audio file
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    mSpeakerRecognition.idVoice();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
 
                     }
                 };
@@ -177,7 +184,7 @@ public class MainActivity extends WearableActivity implements UIAnimation.UIStat
     private void start() {
         // init recorder and api connections
         mSoundRecorder = new SoundRecorder(this, VOICE_FILE_NAME);
-        mSpeakerRecognition = new SpeakerRecognition(this, VOICE_FILE_NAME);
+        mSpeakerRecognition = new SpeakerRecognition(this, VOICE_FILE_NAME, VOICE_FILE_NAME_WAV);
 
         //int[] thumbResources = new int[] {R.id.mic, R.id.play, R.id.music};
 
